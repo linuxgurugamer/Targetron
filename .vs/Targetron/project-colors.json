@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "f6587342-159c-44f3-bf1c-4a78efe2a8f4": {
+      "ProjectGuid": "f6587342-159c-44f3-bf1c-4a78efe2a8f4",
+      "DisplayName": "Targetron",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "ca624f00-beee-4438-887b-74bb5bb99213": {
+      "ProjectGuid": "ca624f00-beee-4438-887b-74bb5bb99213",
+      "DisplayName": "Solution Items",
+      "ColorIndex": 1
+    }
+  },
+  "NextColorIndex": 2
+}

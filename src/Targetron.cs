@@ -127,6 +127,7 @@ namespace Targetron
             //Load the texture and data structure to store toggle state
             if (filters.Count == 0)
             {
+
                 filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/asteroid.png"), VesselType.SpaceObject, true));
                 filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/flag.png"), VesselType.Flag, true));
                 filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/eva.png"), VesselType.EVA, true));
@@ -144,6 +145,7 @@ namespace Targetron
                     filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/deployed_science_part.png"), VesselType.DeployedSciencePart, true));
                     filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/deployed_science_control.png"), VesselType.DeployedScienceController, true));
                 }
+
             }
 
             //Create a separate List of vessel types that are being filtered. This ensures the Debris/Other catches any undefined vessel types.
