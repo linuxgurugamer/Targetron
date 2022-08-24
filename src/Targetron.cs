@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using KSP.UI.Screens;
 using UnityEngine;
+using ToolbarControl_NS;
+using ClickThroughFix;
 
 namespace Targetron
 {
@@ -12,7 +14,7 @@ namespace Targetron
     {
         public static GameObject GameObjectInstance;
         private static PluginConfiguration config;
-        private const String VERSION = "1.7.0 beta1";
+        private static String VERSION;
         private readonly int WINDOWID_GUI = GUIUtility.GetControlID(7225, FocusType.Passive);
         private readonly int WINDOWID_TOOLTIP = GUIUtility.GetControlID(7226, FocusType.Passive);
         private readonly int WINDOWID_CONTEXT = GUIUtility.GetControlID(7227, FocusType.Passive);
@@ -24,27 +26,27 @@ namespace Targetron
         private const int maxWindowHeight = 600;
 
         //Load image files
-        private static readonly string root = KSPUtil.ApplicationRootPath.Replace("\\", "/");
-        private readonly WWW img1 = new WWW("file://" + root + "GameData/Targetron/Icons/target.png");
-        private readonly WWW img2 = new WWW("file://" + root + "GameData/Targetron/Icons/rocket.png");
-        private readonly WWW img3 = new WWW("file://" + root + "GameData/Targetron/Icons/nw-resize.png");
-        private readonly WWW img4 = new WWW("file://" + root + "GameData/Targetron/Icons/sw-resize.png");
+        private const string img1 = "GameData/Targetron/PluginData/Icons/target.png";
+        private const string img2 = "GameData/Targetron/PluginData/Icons/rocket.png";
+        private const string img3 = "GameData/Targetron/PluginData/Icons/nw-resize.png";
+        private const string img4 = "GameData/Targetron/PluginData/Icons/sw-resize.png";
 
-        private readonly WWW img5 = new WWW("file://" + root + "GameData/Targetron/Icons/name_asc.png");
-        private readonly WWW img6 = new WWW("file://" + root + "GameData/Targetron/Icons/name_desc.png");
-        private readonly WWW img7 = new WWW("file://" + root + "GameData/Targetron/Icons/dist_asc.png");
-        private readonly WWW img8 = new WWW("file://" + root + "GameData/Targetron/Icons/dist_desc.png");
+        private const string img5 = "GameData/Targetron/PluginData/Icons/name_asc.png";
+        private const string img6 = "GameData/Targetron/PluginData/Icons/name_desc.png";
+        private const string img7 = "GameData/Targetron/PluginData/Icons/dist_asc.png";
+        private const string img8 = "GameData/Targetron/PluginData/Icons/dist_desc.png";
+
 
         //Textures for image files
-        private static readonly Texture2D buttonTarget = new Texture2D(16, 16);
-        private static readonly Texture2D buttonRocket = new Texture2D(16, 16);
-        private static readonly Texture2D cursorResizeNW = new Texture2D(32, 32);
-        private static readonly Texture2D cursorResizeSW = new Texture2D(32, 32);
+        private static  Texture2D buttonTarget = new Texture2D(16, 16);
+        private static  Texture2D buttonRocket = new Texture2D(16, 16);
+        private static  Texture2D cursorResizeNW = new Texture2D(32, 32);
+        private static  Texture2D cursorResizeSW = new Texture2D(32, 32);
 
-        private static readonly Texture2D buttonNameAsc = new Texture2D(16, 16);
-        private static readonly Texture2D buttonNameDesc = new Texture2D(16, 16);
-        private static readonly Texture2D buttonDistAsc = new Texture2D(16, 16);
-        private static readonly Texture2D buttonDistDesc = new Texture2D(16, 16);
+        private static  Texture2D buttonNameAsc = new Texture2D(16, 16);
+        private static  Texture2D buttonNameDesc = new Texture2D(16, 16);
+        private static  Texture2D buttonDistAsc = new Texture2D(16, 16);
+        private static  Texture2D buttonDistDesc = new Texture2D(16, 16);
 
         //Filters
         private static List<Filter> filters = new List<Filter>();
@@ -98,52 +100,46 @@ namespace Targetron
         private static bool filterRCval;    //Last filter icon that was right clicked
         private static int filterEnableCount; //Count for enabled filter
 
-        //For (optional) integration with Blizzy's Toolbar Plugin
-        private IButton ToolbarButton;
-
         private static List<Target> targets = new List<Target>();  //List of available vessels
         private static Rect originalWindow;   //Original window position/size
         private static bool handleClicked;         //Bottom right resize handle active?
         private static bool handleClicked2;        //Bottom left resize handle active?
         private static bool resetCursor = true;
         private static Vector3 clickedPosition;    //Position where resize handle was originally clicked
-        private ApplicationLauncherButton stockLauncherButton;
 
-        public void Awake()
+        public static void DoAwake()
         {
-            DontDestroyOnLoad(this);
+            VERSION = typeof(Targetron).Assembly.GetName().Version.ToString();
 
             //Load button and cursor textures
-            img1.LoadImageIntoTexture(buttonTarget);
-            img2.LoadImageIntoTexture(buttonRocket);
-            img3.LoadImageIntoTexture(cursorResizeNW);
-            img4.LoadImageIntoTexture(cursorResizeSW);
-
-            img5.LoadImageIntoTexture(buttonNameAsc);
-            img6.LoadImageIntoTexture(buttonNameDesc);
-            img7.LoadImageIntoTexture(buttonDistAsc);
-            img8.LoadImageIntoTexture(buttonDistDesc);
+            ToolbarControl.LoadImageFromFile(ref buttonTarget, img1);
+            ToolbarControl.LoadImageFromFile(ref buttonRocket, img2);
+            ToolbarControl.LoadImageFromFile(ref cursorResizeNW, img3);
+            ToolbarControl.LoadImageFromFile(ref cursorResizeSW, img4);
+            ToolbarControl.LoadImageFromFile(ref buttonNameAsc, img5);
+            ToolbarControl.LoadImageFromFile(ref buttonNameDesc, img6);
+            ToolbarControl.LoadImageFromFile(ref buttonDistAsc, img7);
+            ToolbarControl.LoadImageFromFile(ref buttonDistDesc, img8);
 
             //Load the texture and data structure to store toggle state
             if (filters.Count == 0)
             {
-
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/asteroid.png"), VesselType.SpaceObject, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/flag.png"), VesselType.Flag, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/eva.png"), VesselType.EVA, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/base.png"), VesselType.Base, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/station.png"), VesselType.Station, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/ship.png"), VesselType.Ship, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/lander.png"), VesselType.Lander, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/rover.png"), VesselType.Rover, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/probe.png"), VesselType.Probe, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/debris.png"), VesselType.Debris, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/plane.png"), VesselType.Plane, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/relay.png"), VesselType.Relay, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/asteroid.png", VesselType.SpaceObject, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/flag.png", VesselType.Flag, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/eva.png", VesselType.EVA, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/base.png", VesselType.Base, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/station.png", VesselType.Station, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/ship.png", VesselType.Ship, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/lander.png", VesselType.Lander, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/rover.png", VesselType.Rover, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/probe.png", VesselType.Probe, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/debris.png", VesselType.Debris, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/plane.png", VesselType.Plane, true));
+                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/relay.png", VesselType.Relay, true));
                 if (Expansions.ExpansionsLoader.IsExpansionInstalled("Serenity"))
                 {
-                    filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/deployed_science_part.png"), VesselType.DeployedSciencePart, true));
-                    filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/deployed_science_control.png"), VesselType.DeployedScienceController, true));
+                    filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/deployed_science_part.png", VesselType.DeployedSciencePart, true));
+                    filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/deployed_science_control.png", VesselType.DeployedScienceController, true));
                 }
 
             }
@@ -171,20 +167,12 @@ namespace Targetron
             pos.width = Mathf.Clamp(pos.width, minWindowWidth, maxWindowWidth);
             pos.height = Mathf.Clamp(pos.height, minWindowHeight, maxWindowHeight);
             //stock toolbar
-            GameEvents.onGUIApplicationLauncherReady.Add(AddToolbarButton);
-            GameEvents.onGameSceneLoadRequested.Add(OnSceneChangeRequest);
+            AddToolbarButton();
+            // GameEvents.onGameSceneLoadRequested.Add(OnSceneChangeRequest);
             //event hooks
             GameEvents.onVesselChange.Add(saveConfig);
             GameEvents.onHideUI.Add(OnHideUI);
             GameEvents.onShowUI.Add(OnShowUI);
-            //toolbar stuff
-            if (!ToolbarManager.ToolbarAvailable) return;
-            ToolbarButton = ToolbarManager.Instance.add("Targetron", "tgbutton");
-            ToolbarButton.Text = "Targetron " + VERSION;
-            ToolbarButton.ToolTip = "Targetron " + VERSION;
-            ToolbarButton.TexturePath = "Targetron/Icons/targetrontb";
-            ToolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT);
-            ToolbarButton.OnClick += e => Toggle();
         }
 
         private void saveConfig(Vessel data)
@@ -227,10 +215,6 @@ namespace Targetron
             pos.width = lastWidth;
         }
 
-        public void OnGUI()
-        {
-            OnDraw();
-        }
 
         public void Update()
         {
@@ -331,7 +315,7 @@ namespace Targetron
             }
 
             //Close the context menu on left click anywhere outside of it
-            if (contextActive != null && Mouse.CheckButtons(Mouse.GetAllMouseButtons(), Mouse.Buttons.Left,false) && !contextPos.Contains(new Vector2(Mouse.screenPos.x, Screen.height - Mouse.screenPos.y)))
+            if (contextActive != null && Mouse.CheckButtons(Mouse.GetAllMouseButtons(), Mouse.Buttons.Left, false) && !contextPos.Contains(new Vector2(Mouse.screenPos.x, Screen.height - Mouse.screenPos.y)))
                 contextActive = null;
 
             if (filterRC >= 0 && (Mouse.CheckButtons(Mouse.GetAllMouseButtons(), Mouse.Buttons.Left, false) || Mouse.CheckButtons(Mouse.GetAllMouseButtons(), Mouse.Buttons.Right, false)) && !pos.Contains(new Vector2(Mouse.screenPos.x, Screen.height - Mouse.screenPos.y)))
@@ -360,13 +344,15 @@ namespace Targetron
                 collapseWindow();
         }
 
-        private void OnDraw()
+        private void OnGUI()
         {
             if (!toggleOn || !inFlight) return;
             // Get the current skin for later restore
-            GUISkin defSkin = GUI.skin;
+            //GUISkin defSkin = GUI.skin;
             // Set the ksp skin
             GUI.skin = HighLogic.Skin;
+
+#if false
             if (buttonStyle == null)
             {
                 initStyles();
@@ -375,6 +361,7 @@ namespace Targetron
                 if (!expand)
                     collapseWindow();
             }
+#endif
 
             //Make sure the window isn't dragged off screen
             if (pos.x < 0)
@@ -387,7 +374,7 @@ namespace Targetron
                 pos.y = Screen.height - pos.height;
 
             //Display the window
-            pos = GUI.Window(WINDOWID_GUI, pos, drawTargeter, string.Empty);
+            pos = ClickThruBlocker.GUIWindow(WINDOWID_GUI, pos, drawTargeter, string.Empty);
 
             if (contextActive != null)
             {
@@ -441,21 +428,21 @@ namespace Targetron
 
             //Highlight target red if docking node
             if (FlightGlobals.fetch.VesselTarget is ModuleDockingNode)
-                {
-                    ModuleDockingNode d = (ModuleDockingNode)FlightGlobals.fetch.VesselTarget; //Create specific instance to acccess docking node details
-                    d.part.SetHighlightColor(Color.red);
-                    d.part.SetHighlight(true, false);
-                }
-                else if (contextActive != null && activeDockingNode != null && activeDockingNode.part.highlightType == Part.HighlightType.Disabled)
-                    activeDockingNode.part.SetHighlight(true, false);
+            {
+                ModuleDockingNode d = (ModuleDockingNode)FlightGlobals.fetch.VesselTarget; //Create specific instance to acccess docking node details
+                d.part.SetHighlightColor(Color.red);
+                d.part.SetHighlight(true, false);
+            }
+            else if (contextActive != null && activeDockingNode != null && activeDockingNode.part.highlightType == Part.HighlightType.Disabled)
+                activeDockingNode.part.SetHighlight(true, false);
 
-                if (lastActiveDockingNode != null && (contextActive == null || activeDockingNode == null || !lastActiveDockingNode.Equals(activeDockingNode)))
-                {
-                    lastActiveDockingNode.part.SetHighlight(false, false);
-                    lastActiveDockingNode = null;
-                }
+            if (lastActiveDockingNode != null && (contextActive == null || activeDockingNode == null || !lastActiveDockingNode.Equals(activeDockingNode)))
+            {
+                lastActiveDockingNode.part.SetHighlight(false, false);
+                lastActiveDockingNode = null;
+            }
             // Restore the skin so we don't interfere others plugins skins?
-            GUI.skin = defSkin;
+            //GUI.skin = defSkin;
         }
 
         //Draw the tooltip window contents
@@ -543,16 +530,9 @@ namespace Targetron
         {
             //Save the expanded postion and collapse state
             saveConfig();
-            if (ToolbarButton != null) ToolbarButton.Destroy();
             GameEvents.onVesselChange.Remove(saveConfig);
-            GameEvents.onGameSceneLoadRequested.Remove(OnSceneChangeRequest);
             GameEvents.onHideUI.Remove(OnHideUI);
             GameEvents.onShowUI.Remove(OnShowUI);
-            if (stockLauncherButton != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(stockLauncherButton);
-                stockLauncherButton = null;
-            }
         }
 
         //Sorts Vessels by their distance from the active vessel
@@ -847,7 +827,7 @@ namespace Targetron
                     {
                         //filterRC = i;
                         //filterRCval = filters[i].Enabled;
-                        if(filters[i].Enabled && filterEnableCount == 1)
+                        if (filters[i].Enabled && filterEnableCount == 1)
                         {
                             for (j = 0; j < filters.Count; j++)
                             {
@@ -861,7 +841,7 @@ namespace Targetron
                                 }
                             }
                         }
-                        else if(!filters[i].Enabled && filterEnableCount == 1)
+                        else if (!filters[i].Enabled && filterEnableCount == 1)
                         {
                             for (j = 0; j < filters.Count; j++)
                             {
@@ -1008,7 +988,7 @@ namespace Targetron
             return (distance / 1000000000000000).ToString("N0") + " Pm";
         }
 
-        public void initStyles()
+        public static void initStyles()
         {
             //Initialize styles
             buttonStyle = new GUIStyle(GUI.skin.GetStyle("Button"))
@@ -1117,15 +1097,28 @@ namespace Targetron
             toggleOn = !toggleOn;
         }
 
+        internal const string MODID = "Targetron";
+        internal const string MODNAME = "Targetron";
+        static internal ToolbarControl toolbarControl = null;
+
         private void AddToolbarButton()
         {
-            GameEvents.onGUIApplicationLauncherReady.Remove(AddToolbarButton);
-            stockLauncherButton = ApplicationLauncher.Instance.AddModApplication(
-                Toggle, Toggle, null, null, null, null,
-                ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
-                GameDatabase.Instance.GetTexture("Targetron/Icons/targetron", false));
+            if (toolbarControl == null)
+            {
+                toolbarControl = gameObject.AddComponent<ToolbarControl>();
+                toolbarControl.AddToAllToolbars(Toggle, Toggle,
+                    ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW,
+                    MODID,
+                    "targetronButton",
+                    "Targetron/PluginData/Icons/targetron", // big
+                    "Targetron/PluginData/Icons/targetrontb", // small
+                    MODNAME
+                );
+                toolbarControl.ToolTip = "Targetron " + VERSION;
+            }
         }
 
+#if false
         public void OnSceneChangeRequest(GameScenes scene)
         {
             if (stockLauncherButton != null)
@@ -1134,6 +1127,7 @@ namespace Targetron
                 stockLauncherButton = null;
             }
         }
+#endif
     }
 
     class Target
@@ -1180,9 +1174,10 @@ namespace Targetron
         public VesselType Type;
         public bool Enabled = true;
 
-        public Filter(WWW textureLink, VesselType type, bool enabled)
+        public Filter(string textureLink, VesselType type, bool enabled)
         {
-            textureLink.LoadImageIntoTexture(Texture);
+            ToolbarControl.LoadImageFromFile(ref Texture, textureLink);
+
             Type = type;
             Enabled = enabled;
         }
