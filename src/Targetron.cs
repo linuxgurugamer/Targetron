@@ -126,18 +126,18 @@ namespace Targetron
             //Load the texture and data structure to store toggle state
             if (filters.Count == 0)
             {
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/asteroid.png"), VesselType.SpaceObject, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/flag.png"), VesselType.Flag, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/eva.png"), VesselType.EVA, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/base.png"), VesselType.Base, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/station.png"), VesselType.Station, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/ship.png"), VesselType.Ship, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/lander.png"), VesselType.Lander, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/rover.png"), VesselType.Rover, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/probe.png"), VesselType.Probe, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/debris.png"), VesselType.Debris, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/plane.png"), VesselType.Plane, true));
-                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/Icons/relay.png"), VesselType.Relay, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/asteroid.png"), VesselType.SpaceObject, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/flag.png"), VesselType.Flag, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/eva.png"), VesselType.EVA, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/base.png"), VesselType.Base, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/station.png"), VesselType.Station, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/ship.png"), VesselType.Ship, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/lander.png"), VesselType.Lander, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/rover.png"), VesselType.Rover, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/probe.png"), VesselType.Probe, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/debris.png"), VesselType.Debris, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/plane.png"), VesselType.Plane, true));
+                filters.Add(new Filter(new WWW("file://" + root + "GameData/Targetron/PluginData/Icons/relay.png"), VesselType.Relay, true));
             }
 
             //Create a separate List of vessel types that are being filtered. This ensures the Debris/Other catches any undefined vessel types.

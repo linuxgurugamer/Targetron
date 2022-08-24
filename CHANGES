@@ -1,3 +1,11 @@
+Changelog
+    Added VS files
+    Added AssemblyVersion.tt
+    Added InstallChecker
+    Added .version file
+    Added local deploy scripts
+    Added jenkins control file
+
 2014-04-24 (1.4.1) agises
     * fix gui skin issue
     * code cleanup
