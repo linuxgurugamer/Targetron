@@ -40,7 +40,7 @@ namespace Targetron
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     internal class InstallChecker : MonoBehaviour
     {
-        private const string MODNAME = "targetron";
+        private const string MODNAME = "Targetron";
         private const string FOLDERNAME = "Targetron";
         private const string EXPECTEDPATH = FOLDERNAME + "/Plugins";
 
