@@ -170,15 +170,15 @@ namespace Targetron
             AddToolbarButton();
             // GameEvents.onGameSceneLoadRequested.Add(OnSceneChangeRequest);
             //event hooks
-            GameEvents.onVesselChange.Add(saveConfig);
+            GameEvents.onVesselChange.Add(SaveConfig);
             GameEvents.onHideUI.Add(OnHideUI);
             GameEvents.onShowUI.Add(OnShowUI);
         }
 
-        private void saveConfig(Vessel data)
+        private void SaveConfig(Vessel data)
         {
             if (!expand)
-                expandWindow();
+                ExpandWindow();
 
             config.SetValue("version", VERSION);
             config.SetValue("pos", pos);
@@ -190,11 +190,11 @@ namespace Targetron
             config.save();
 
             if (!expand)
-                collapseWindow();
+                CollapseWindow();
         }
 
         //Collapses the window
-        private void collapseWindow()
+        private void CollapseWindow()
         {
             if (!(pos.height > 20)) return;
             lastHeight = pos.height;
@@ -206,7 +206,7 @@ namespace Targetron
         }
 
         //Expands the window
-        private void expandWindow()
+        private void ExpandWindow()
         {
             if (pos.height != 20) return;
             pos.height = lastHeight;
@@ -256,17 +256,17 @@ namespace Targetron
                     switch (sortMode)
                     {
                         case 0:
-                            targets.Sort(sortByDistanceA);   //Sort target vessels by their distance from the active ship
+                            targets.Sort(SortByDistanceA);   //Sort target vessels by their distance from the active ship
                             break;
                         case 1:
-                            targets.Sort(sortByDistanceD);   //Sort target vessels by their distance from the active ship
+                            targets.Sort(SortByDistanceD);   //Sort target vessels by their distance from the active ship
                             break;
                         case 2:
-                            targets.Sort(sortByDistanceA);
+                            targets.Sort(SortByDistanceA);
                             targets.Sort((x, y) => String.CompareOrdinal(x.vessel.GetName(), y.vessel.GetName()));
                             break;
                         case 3:
-                            targets.Sort(sortByDistanceA);
+                            targets.Sort(SortByDistanceA);
                             targets.Sort((y, x) => String.CompareOrdinal(x.vessel.GetName(), y.vessel.GetName()));
                             break;
                     }
@@ -309,7 +309,7 @@ namespace Targetron
             else if (inFlight)
             {
                 inFlight = false;
-                saveConfig();
+                SaveConfig();
                 contextActive = null;
                 filterRC = -1;
             }
@@ -326,10 +326,10 @@ namespace Targetron
                 contextActive = null;
         }
 
-        private void saveConfig()
+        private void SaveConfig()
         {
             if (!expand)
-                expandWindow();
+                ExpandWindow();
 
             config.SetValue("version", VERSION);
             config.SetValue("pos", pos);
@@ -341,7 +341,7 @@ namespace Targetron
             config.save();
 
             if (!expand)
-                collapseWindow();
+                CollapseWindow();
         }
 
         private void OnGUI()
@@ -351,17 +351,6 @@ namespace Targetron
             //GUISkin defSkin = GUI.skin;
             // Set the ksp skin
             GUI.skin = HighLogic.Skin;
-
-#if false
-            if (buttonStyle == null)
-            {
-                initStyles();
-
-                //Collapse the window, if necessary
-                if (!expand)
-                    collapseWindow();
-            }
-#endif
 
             //Make sure the window isn't dragged off screen
             if (pos.x < 0)
@@ -374,7 +363,7 @@ namespace Targetron
                 pos.y = Screen.height - pos.height;
 
             //Display the window
-            pos = ClickThruBlocker.GUIWindow(WINDOWID_GUI, pos, drawTargeter, string.Empty);
+            pos = ClickThruBlocker.GUIWindow(WINDOWID_GUI, pos, DrawTargeter, string.Empty);
 
             if (contextActive != null)
             {
@@ -405,7 +394,7 @@ namespace Targetron
                     contextPos = new Rect(left, _top, textSize.x + 5, (numDocks + 3) * Mathf.RoundToInt(contextStyle.fixedHeight));
                     lcontextActive = contextActive;
                 }
-                contextPos = GUI.Window(WINDOWID_CONTEXT, contextPos, drawContext, string.Empty);
+                contextPos = GUI.Window(WINDOWID_CONTEXT, contextPos, DrawContext, string.Empty);
                 GUI.BringWindowToFront(WINDOWID_CONTEXT);
             }
             else
@@ -422,7 +411,7 @@ namespace Targetron
                 if (_top < 0)
                     _top = 0;
                 tooltipPos = new Rect(left, _top, textSize.x + 10, textSize.y - 3);
-                tooltipPos = GUI.Window(WINDOWID_TOOLTIP, tooltipPos, drawTooltip, string.Empty);
+                tooltipPos = GUI.Window(WINDOWID_TOOLTIP, tooltipPos, DrawTooltip, string.Empty);
                 GUI.BringWindowToFront(WINDOWID_TOOLTIP);
             }
 
@@ -446,14 +435,14 @@ namespace Targetron
         }
 
         //Draw the tooltip window contents
-        private void drawTooltip(int windowID)
+        private void DrawTooltip(int windowID)
         {
             tooltipStyle.normal.textColor = new Color(1.0f, 1.0f, 1.0f); //White
             GUI.Label(new Rect(5, 0, tooltipPos.width - 5, tooltipPos.height), tooltip, tooltipStyle);
         }
 
         //Draw the right click context menu window contents
-        private void drawContext(int windowID)
+        private void DrawContext(int windowID)
         {
             int _top = 0;
             if (GUI.Button(new Rect(0, _top, contextPos.width, 20), "Target Vessel", contextStyle))
@@ -464,7 +453,7 @@ namespace Targetron
             _top += Mathf.RoundToInt(contextStyle.fixedHeight);
             if (GUI.Button(new Rect(0, _top, contextPos.width, 20), "Control Vessel", contextStyle))
             {
-                saveConfig();
+                SaveConfig();
                 //GamePersistence.SaveGame("persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
                 if (contextActive != null) FlightGlobals.SetActiveVessel(contextActive.vessel);
                 contextActive = null;
@@ -523,20 +512,20 @@ namespace Targetron
         private void OnApplicationQuit()
         {
             //Save the expanded postion and collapse state
-            saveConfig();
+            SaveConfig();
         }
 
         private void OnDestroy()
         {
             //Save the expanded postion and collapse state
-            saveConfig();
-            GameEvents.onVesselChange.Remove(saveConfig);
+            SaveConfig();
+            GameEvents.onVesselChange.Remove(SaveConfig);
             GameEvents.onHideUI.Remove(OnHideUI);
             GameEvents.onShowUI.Remove(OnShowUI);
         }
 
         //Sorts Vessels by their distance from the active vessel
-        private static int sortByDistance(Target a, Target b)
+        private static int SortByDistance(Target a, Target b)
         {
             if (FlightGlobals.fetch == null || FlightGlobals.fetch.activeVessel == null || FlightGlobals.fetch.activeVessel.transform == null)
                 return 0;
@@ -558,17 +547,17 @@ namespace Targetron
                 return 1;
             return a.lastDistance.CompareTo(b.lastDistance);
         }
-        private static int sortByDistanceA(Target a, Target b)
+        private static int SortByDistanceA(Target a, Target b)
         {
-            return sortByDistance(a, b);
+            return SortByDistance(a, b);
         }
-        private static int sortByDistanceD(Target a, Target b)
+        private static int SortByDistanceD(Target a, Target b)
         {
-            return sortByDistance(b, a);
+            return SortByDistance(b, a);
         }
 
         //Draw function for the window
-        private void drawTargeter(int windowID)
+        private void DrawTargeter(int windowID)
         {
             int i, j;
             //Draw the search box first so it keeps its focus
@@ -633,17 +622,17 @@ namespace Targetron
                     switch (sortMode)
                     {
                         case 0:
-                            targets.Sort(sortByDistanceA);   //Sort target vessels by their distance from the active ship
+                            targets.Sort(SortByDistanceA);   //Sort target vessels by their distance from the active ship
                             break;
                         case 1:
-                            targets.Sort(sortByDistanceD);   //Sort target vessels by their distance from the active ship
+                            targets.Sort(SortByDistanceD);   //Sort target vessels by their distance from the active ship
                             break;
                         case 2:
-                            targets.Sort(sortByDistanceA);
+                            targets.Sort(SortByDistanceA);
                             targets.Sort((x, y) => String.CompareOrdinal(x.vessel.GetName(), y.vessel.GetName()));
                             break;
                         case 3:
-                            targets.Sort(sortByDistanceA);
+                            targets.Sort(SortByDistanceA);
                             targets.Sort((y, x) => String.CompareOrdinal(x.vessel.GetName(), y.vessel.GetName()));
                             break;
                     }
@@ -659,7 +648,7 @@ namespace Targetron
             if (expand) //If window is expanded
             {
                 if (pos.height == 20)
-                    expandWindow(); //Expand window if it has not already been done
+                    ExpandWindow(); //Expand window if it has not already been done
 
                 //Display the scroll view for target list
                 scrollPosition = GUI.BeginScrollView(new Rect(4, 24, pos.width - 8, pos.height - 27 - 22), scrollPosition, new Rect(1, 16, pos.width - 33, top > pos.height - 27 - 22 ? top : pos.height - 27 - 22), false, true);
@@ -680,7 +669,7 @@ namespace Targetron
                     {
                         for (i = 0; i < filters.Count; i++)
                         {
-                            if (filters[i].matchType(target.vessel.vesselType, vesselTypes) && !filters[i].Enabled)
+                            if (filters[i].MatchType(target.vessel.vesselType, vesselTypes) && !filters[i].Enabled)
                                 showVessel = false;
                         }
                     }
@@ -697,7 +686,7 @@ namespace Targetron
                     try
                     {
                         String _name = target.vessel.GetName();
-                        diff = pos.width - 55 - rightStyle.CalcSize(new GUIContent("(" + formatDistance(target.lastDistance) + ")")).x - 42;
+                        diff = pos.width - 55 - rightStyle.CalcSize(new GUIContent("(" + FormatDistance(target.lastDistance) + ")")).x - 42;
                         if (leftStyle.CalcSize(new GUIContent(_name)).x - 2 >= diff - 2)
                         {
                             _name = _name.Substring(0, _name.Length - 1);
@@ -735,7 +724,7 @@ namespace Targetron
                             contextActive = target;
 
                         //Display the distance
-                        GUILayout.Label("(" + formatDistance(target.lastDistance) + ")", rightStyle, GUILayout.ExpandWidth(false));
+                        GUILayout.Label("(" + FormatDistance(target.lastDistance) + ")", rightStyle, GUILayout.ExpandWidth(false));
 
                         //Add button to set vessel as target
                         if (GUILayout.Button(new GUIContent(buttonTarget, "Set as Target"), buttonStyle))
@@ -744,7 +733,7 @@ namespace Targetron
                         //Add button to control vessel
                         if (GUILayout.Button(new GUIContent(buttonRocket, "Control Vessel"), buttonStyle))
                         {
-                            saveConfig();
+                            SaveConfig();
                             //GamePersistence.SaveGame("persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
                             FlightGlobals.SetActiveVessel(target.vessel);
                         }
@@ -951,7 +940,7 @@ namespace Targetron
                 }
             }
             else if (pos.height > 20)   //Collapse flag set, check if collapse is needed
-                collapseWindow();   //Collapse the window
+                CollapseWindow();   //Collapse the window
 
             tooltip = GUI.tooltip;
 
@@ -961,7 +950,7 @@ namespace Targetron
         }
 
         //Formats a distance in meters to a more meaningful measurement
-        private String formatDistance(float distance)
+        private String FormatDistance(float distance)
         {
             if (distance < 1000f)
                 return distance.ToString("N1") + " m";
@@ -988,7 +977,7 @@ namespace Targetron
             return (distance / 1000000000000000).ToString("N0") + " Pm";
         }
 
-        public static void initStyles()
+        public static void InitStyles()
         {
             //Initialize styles
             buttonStyle = new GUIStyle(GUI.skin.GetStyle("Button"))
@@ -1117,91 +1106,5 @@ namespace Targetron
                 toolbarControl.ToolTip = "Targetron " + VERSION;
             }
         }
-
-#if false
-        public void OnSceneChangeRequest(GameScenes scene)
-        {
-            if (stockLauncherButton != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(stockLauncherButton);
-                stockLauncherButton = null;
-            }
-        }
-#endif
     }
-
-    class Target
-    {
-        public Vessel vessel;
-        public List<ModuleDockingNode> availableDocks;
-        public uint defaultDock = 0;
-        public float lastDistance = 0;
-        public String lastVName = null;
-        public VesselType lastVType = new VesselType();
-        public String queuedVName = null;
-        public VesselType queuedVType = new VesselType();
-
-        public Target(Vessel vessel, List<ModuleDockingNode> availableDocks, uint defaultDock)
-        {
-            this.vessel = vessel;
-            if (availableDocks == null)
-                this.availableDocks = new List<ModuleDockingNode>();
-            else
-                this.availableDocks = availableDocks;
-            this.defaultDock = defaultDock;
-            update();
-        }
-        public void update()
-        {
-            /*if (lastVName != null && this.vessel.GetName().Length != 0 && !this.vessel.GetName().Equals(this.lastVName) || !this.vessel.vesselType.Equals(this.lastVType))
-                Debug.Log("TARGETRON: RENAME DETECTED ON VESSEL " + this.lastVName + "-" + this.lastVType + " -> " + this.vessel.GetName() + "-" + this.vessel.vesselType);*/
-            lastVName = vessel.GetName();
-            lastVType = vessel.vesselType;
-            try
-            {
-                lastDistance = Vector3.Distance(FlightGlobals.fetch.activeVessel.transform.position, vessel.transform.position);
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Targetron Error: Failed to get distance\n" + e.StackTrace);
-            }
-        }
-    }
-
-    class Filter
-    {
-        public Texture2D Texture = new Texture2D(20, 20);
-        public VesselType Type;
-        public bool Enabled = true;
-
-        public Filter(string textureLink, VesselType type, bool enabled)
-        {
-            ToolbarControl.LoadImageFromFile(ref Texture, textureLink);
-
-            Type = type;
-            Enabled = enabled;
-        }
-
-        public String getName()
-        {
-            if (Type.Equals(VesselType.Debris))
-                return Type + "/Other";
-            return Type.ToString();
-        }
-
-        public bool matchType(VesselType type, List<VesselType> vesselTypes)
-        {
-            if (Type.Equals(type))
-                return true;
-            if (Type.Equals(VesselType.Debris) && !vesselTypes.Contains(type))
-                return true;
-            return false;
-        }
-
-        public void toggle()
-        {
-            Enabled = !Enabled;
-        }
-    }
-
 }

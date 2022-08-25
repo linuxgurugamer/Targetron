@@ -1,10 +1,10 @@
 {
-  "NAME": "IFILS",
-  	"URL": "http://ksp.spacetux.net/avc/targetron",
-    "DOWNLOAD": "https://github.com/linuxgurugamer/targetron/releases",
+  "NAME": "Targetron",
+  "URL": "http://ksp.spacetux.net/avc/Targetron",
+  "DOWNLOAD": "https://github.com/linuxgurugamer/Targetron/releases",
   "GITHUB": {
     "USERNAME": "linuxgurugamer",
-    "REPOSITORY": "targetron"
+    "REPOSITORY": "Targetron"
   },
   "VERSION": {
     "MAJOR": 1,

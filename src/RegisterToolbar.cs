@@ -38,7 +38,7 @@ namespace Targetron
             if (!initted)
             {
                 initted = true;
-                Targetron.initStyles();
+                Targetron.InitStyles();
             }
         }
     }

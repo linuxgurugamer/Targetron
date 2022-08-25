@@ -7,6 +7,7 @@ Changelog
     Added .version file
     Added local deploy scripts
     Added jenkins control file
+
     Added support for Toolbarcontroller
     Removed ToolbarWrapper (not used)
     Added support for ClickThroughBlocker
@@ -16,6 +17,9 @@ Changelog
     Removed unnecesary reassignment of GUI.skin at end of method
     Moved all  initialization of textures into RegisterToolbar
     Removed the DontDestroyOnLoad from Awake() to avoid unnecessary calling in scenes not used
+    Moved Target and Filter classes into their own files
+    Capitalized  first letter of all methods
+    Updated README
 
     Merged changes from royyi's repo
         filter icon behavior act like stock map
@@ -24,6 +28,8 @@ Changelog
         Drop out LegacyInputModules
         Limit vessel list to 50 to improve performance
         New Icons
+
+    Merged in new icons from github uiser @hashashin for toolbar buttons (reduced size)
 
 2014-04-24 (1.4.1) agises
     * fix gui skin issue

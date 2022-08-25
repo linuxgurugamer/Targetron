@@ -1,7 +1,9 @@
 Targetron
 =========
 Targetron - Kerbal Space Program  
-Author: Jarcikon
+Original Author: Jarcikon
+Previous Adopter:  agises
+Current Adopter/maintainer:   Linuxgurugamer
 
 This plugin displays a window listing all vessels in flight (including debris) in a convenient list, and allows you to target or take control of any vessel quickly. The list can be sorted by distance or vessel name and filtered by search text or vessel type. You can also right click a listed vessel to rename or, if close enough, target available docking ports.
 
@@ -21,5 +23,10 @@ You can resize the window by clicking and dragging the bottom-left or bottom-rig
 Installation
 ------------
 1. Unzip the contents into the main KSP installation folder, or copy the contents of GameData into the {KSP Root}/GameData Folder.
+
+2. Make sure the dependencies are installed:
+	ClickThroughBlocker
+	ToolbarController
+	SpaceTuxLibrary
 
 2. Restart KSP and the window will appear once in flight. No special parts are required to activate this plugin.
