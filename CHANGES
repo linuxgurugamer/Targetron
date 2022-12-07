@@ -1,5 +1,8 @@
 Changelog
 
+1.7.0.1
+    Fixed path for loading files (broken by new launcher)
+
 1.7.0
     Added VS files
     Added AssemblyVersion.tt

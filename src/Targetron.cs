@@ -112,34 +112,34 @@ namespace Targetron
             VERSION = typeof(Targetron).Assembly.GetName().Version.ToString();
 
             //Load button and cursor textures
-            ToolbarControl.LoadImageFromFile(ref buttonTarget, img1);
-            ToolbarControl.LoadImageFromFile(ref buttonRocket, img2);
-            ToolbarControl.LoadImageFromFile(ref cursorResizeNW, img3);
-            ToolbarControl.LoadImageFromFile(ref cursorResizeSW, img4);
-            ToolbarControl.LoadImageFromFile(ref buttonNameAsc, img5);
-            ToolbarControl.LoadImageFromFile(ref buttonNameDesc, img6);
-            ToolbarControl.LoadImageFromFile(ref buttonDistAsc, img7);
-            ToolbarControl.LoadImageFromFile(ref buttonDistDesc, img8);
+            ToolbarControl.LoadImageFromFile(ref buttonTarget, KSPUtil.ApplicationRootPath + img1);
+            ToolbarControl.LoadImageFromFile(ref buttonRocket, KSPUtil.ApplicationRootPath + img2);
+            ToolbarControl.LoadImageFromFile(ref cursorResizeNW, KSPUtil.ApplicationRootPath + img3);
+            ToolbarControl.LoadImageFromFile(ref cursorResizeSW, KSPUtil.ApplicationRootPath + img4);
+            ToolbarControl.LoadImageFromFile(ref buttonNameAsc, KSPUtil.ApplicationRootPath + img5);
+            ToolbarControl.LoadImageFromFile(ref buttonNameDesc, KSPUtil.ApplicationRootPath + img6);
+            ToolbarControl.LoadImageFromFile(ref buttonDistAsc, KSPUtil.ApplicationRootPath + img7);
+            ToolbarControl.LoadImageFromFile(ref buttonDistDesc, KSPUtil.ApplicationRootPath + img8);
 
             //Load the texture and data structure to store toggle state
             if (filters.Count == 0)
             {
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/asteroid.png", VesselType.SpaceObject, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/flag.png", VesselType.Flag, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/eva.png", VesselType.EVA, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/base.png", VesselType.Base, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/station.png", VesselType.Station, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/ship.png", VesselType.Ship, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/lander.png", VesselType.Lander, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/rover.png", VesselType.Rover, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/probe.png", VesselType.Probe, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/debris.png", VesselType.Debris, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/plane.png", VesselType.Plane, true));
-                filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/relay.png", VesselType.Relay, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/asteroid.png", VesselType.SpaceObject, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/flag.png", VesselType.Flag, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/eva.png", VesselType.EVA, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/base.png", VesselType.Base, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/station.png", VesselType.Station, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/ship.png", VesselType.Ship, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/lander.png", VesselType.Lander, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/rover.png", VesselType.Rover, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/probe.png", VesselType.Probe, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/debris.png", VesselType.Debris, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/plane.png", VesselType.Plane, true));
+                filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/relay.png", VesselType.Relay, true));
                 if (Expansions.ExpansionsLoader.IsExpansionInstalled("Serenity"))
                 {
-                    filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/deployed_science_part.png", VesselType.DeployedSciencePart, true));
-                    filters.Add(new Filter( "GameData/Targetron/PluginData/Icons/deployed_science_control.png", VesselType.DeployedScienceController, true));
+                    filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/deployed_science_part.png", VesselType.DeployedSciencePart, true));
+                    filters.Add(new Filter(KSPUtil.ApplicationRootPath + "GameData/Targetron/PluginData/Icons/deployed_science_control.png", VesselType.DeployedScienceController, true));
                 }
 
             }
